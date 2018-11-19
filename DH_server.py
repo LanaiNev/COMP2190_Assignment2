@@ -104,44 +104,42 @@ def RollDiceACK(dice):
     return status
 
 def make_bid(bid, msg):
-     """This function processes messages that are read through the socket. It
-    determines whether or not the bid made is valid and returns a status.
-    """
-
-    """You will need to complete this method """
-    msg = msg.split(' ')
-    frequency = bid[0]
-    value = bid[1]
+	"""This function processes messages that are read through the socket. It
+    determines whether or not the bid made is valid and returns a status."""
+    
+	"""You will need to complete this method """
+	msg = msg.split(' ')
+	frequency = bid[0]
+	value = bid[1]
 
 def challenge(roll, clientRoll, msg):
-    print("Server roll is: " + roll)
-    print("Client's roll is: " + clientRoll)
-   """This function processes messages that are read through the socket. It
+	print("Server roll is: " + roll)
+	print("Client's roll is: " + clientRoll)
+	"""This function processes messages that are read through the socket. It
     receives the client's roll and shows the server's roll. It also determines
-    whether or not the challenge made is valid and returns a status.
-    """
-
-    """You will need to complete this method """
+    whether or not the challenge made is valid and returns a status."""
+    
+	"""You will need to complete this method """
 
 
 # s      = socket
 # msg     = initial message being processed
 # state  = dictionary containing state variables
 def processMsgs(s, msg, state):
-    """This function processes messages that are read through the socket. It
-        returns a status, which is an integer indicating whether the operation
-        was successful"""
+	"""This function processes messages that are read through the socket. It
+	returns a status, which is an integer indicating whether the operation
+	was successful"""
 	status = -2
 	gen = int(state['Gen'])				# integer generator
 	prime = int(state['prime'])			# integer prime
 	sKey = int(state['SecretKey'])		# secret key
 	rcvrPK = int(state['RcvrPubKey'])	# receiver's public key
 	nonce = int(state['Nonce'])
-    bids = int(state['Bids'])           # number of bids made
+	bids = int(state['Bids'])           # number of bids made
 	srvrDice = int(state['ServerDice'])
 	clntDice = int(state['ClientDice'])
-    clntDice = list(map(int,clntDice))  # Converting dice values to ints
-    srvrDice = list(map(int,srvrDice))  # Converting dice values to ints
+	clntDice = list(map(int,clntDice))  # Converting dice values to ints
+	srvrDice = list(map(int,srvrDice))  # Converting dice values to ints
 	
 	strTest = clientHello()
 	if strTest in msg and status == -2:
@@ -156,7 +154,7 @@ def processMsgs(s, msg, state):
 		RcvdStr = msg.split(' ')
 		gen = int(RcvdStr[2][0:-1])
 		prime = int(RcvdStr[4])
-		sKey = ## Complete this
+		#sKey = ## Complete this
 		msg = "111 Generator and Prime Rcvd"
 		s.sendall(bytes(msg, 'utf-8'))
 		state['gen'] = gen
@@ -169,7 +167,7 @@ def processMsgs(s, msg, state):
 		print("Message received: " + msg)
 		RcvdStr = msg.split(' ')
 		rcvrPK = int(RcvdStr[2])
-		msg = # Complete this
+		#msg = # Complete this
 		print("Message sent: " + str(msg))
 		s.sendall(bytes(msg, 'utf-8'))
 		state['RcvrPubKey'] = rcvrPK
@@ -178,19 +176,19 @@ def processMsgs(s, msg, state):
 	strTest = "130 Ciphertext"
 	if strTest in msg and status == -2:
 		print("Message received:" + str(msg))
-		Pub = # Complete this
+		#Pub = # Complete this
 		RcvdStr = msg.split(' ')
 		y1 = int(RcvdStr[2])
 		clntCtxt = int(RcvdStr[3])
 		dcryptedNonce = decryptMsg(clntCtxt, y1, sKey, prime)
-		msg = #complete this
+		#msg = #complete this
 		s.sendall(bytes(msg, 'utf-8'))
 		print("Message sent: " + msg)
 		status = 0		# To terminate loop at server.
 
-    strDiceRollResp = "200 Roll Dice"
-    if strDiceRollResp in msg and status == -2:
-        print("Message received: " + msg)
+	strDiceRollResp = "200 Roll Dice"
+	if strDiceRollResp in msg and status == -2:
+		print("Message received: " + msg)
         rollDice(clntDice)
         msg = RollDiceACK(clntDice)
         s.sendall(bytes(msg,'utf-8'))
@@ -220,18 +218,18 @@ def main():
 	prime = 127
 	secretKey = computeSecretKey(generator, prime)
 	rcvrPK = 5     # Initial value for receiver's public key
-    nonce = generateNonce()
-    bids = 0
-    srvrDice = [random.randint(1,6), random.randint(1,6), random.randint(1,6),
+	nonce = generateNonce()
+	bids = 0
+	srvrDice = [random.randint(1,6), random.randint(1,6), random.randint(1,6),
             random.randint(1,6),random.randint(1,6)]
-    clntDice = [random.randint(1,6), random.randint(1,6), random.randint(1,6),
+	clntDice = [random.randint(1,6), random.randint(1,6), random.randint(1,6),
             random.randint(1,6),random.randint(1,6)]
 	state = {'Gen': generator, 'prime': prime, 'SecretKey': secretKey,
 	 'RcvrPubKey': rcvrPK, 'Nonce': nonce, 'ServerDice': srvrDice,
 	 'ClientDice': clntDice, 'Bids': bids }
 	
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+		s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		s.bind((HOST, PORT))
 		s.listen(1)
 		conn, addr = s.accept()
