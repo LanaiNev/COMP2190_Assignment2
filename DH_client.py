@@ -57,8 +57,8 @@ def computePublicKey(g, p, s):
     pass
 
 def sendPublicKey(g, p, s):
-    """Sends node's public key"""
-    status = "120 PubKey " + str(computePublicKey(g, p, s))
+	"""Sends node's public key"""
+	status = "120 PubKey " + str(computePublicKey(g, p, s))
 	return status
 
 def generateNonce():
@@ -103,21 +103,20 @@ def RollDice():
         status = "200 Roll Dice"
     else:
 		print("You exited the game!")
-        status = ""
+		status = ""
     return status
     
 def make_bid(state):
-    """This function determines whether the bid made is valid and
-       returns a status.
-    """
+	"""This function determines whether the bid made is valid and
+	returns a status."""
 	bid  = state['lastBid']    
-    bid = list(map(int,bid)) 
+	bid = list(map(int,bid)) 
 	status = -1
-    frequency = bid[0]
-    value = bid[1]
+	frequency = bid[0]
+	value = bid[1]
 	
 	face = input('Enter face value for your bid. Enter 0 to challenge: ')
-    numFaces = input('Enter number of face value in your bid. Enter 0 to challenge: ')
+	numFaces = input('Enter number of face value in your bid. Enter 0 to challenge: ')
 	if (face !=0 and numFaces !=0):
 		if (numFaces > frequency or face > value):
 			status = 1
@@ -132,13 +131,13 @@ def make_bid(state):
 	return status
 
 def MakeBidMsg(state):
-    """Generates message to send a bid to the server."""
+	"""Generates message to send a bid to the server."""
 	"""A bid of '300 Bid 0 0' is a challenge. """
 	make_bid(state)
 	bid  = state['lastBid']    
-    bid = list(map(int,bid)) 
+	bid = list(map(int,bid)) 
 	status = "300 Bid " + str(bid[1]) + " " + str(bid[0])
-    return status  
+	return status  
 
 def challenge(roll, msg):
     """This function processes messages that are read through the socket. It
@@ -156,91 +155,90 @@ def challenge(roll, msg):
 # s       = socket
 # msg     = initial message being processed
 def processMsgs(s, msg, state):
-    """This function processes messages that are read through the socket. It
+	"""This function processes messages that are read through the socket. It
         returns a status, which is an integer indicating whether the operation
-        was successful"""
-        
-    status = -2
+        was successful"""    
+	status = -2
 	gen = int(state['gen'])				# integer generator
 	prime = int(state['prime'])			# integer prime
 	sKey = int(state['SecretKey'])		# secret key
 	rcvrPK = int(state['RcvrPubKey'])	# receiver's public key
 	nonce = int(state['nonce'])			# Number used only once
-    bids = int(state['Bids'])           # bids       = number of bids made
-    dice  = state['Dice']               # Dice = values of dice
-    dice = list(map(int,dice))          # Converting dice values to ints
-
-    strTest = serverHello()
-    if (strTest in msg and status==-2):
-        msg = ##Complete this line
-        print("Message sent: " + msg)
-        s.sendall(bytes(msg,'utf-8'))
-        status = 1
-    
-    strTest = "111 Generator and Prime Rcvd"
-    if (strTest in msg and status==-2):
-        msg = ##Complete this line
-        s.sendall(bytes(msg, 'utf-8'))
-        status = 1
-    
-    strTest = "120 PubKey"
-    if (strTest in msg and status==-2):
-        RcvdStr = msg.split(' ')
-        rcvrPK = int(RcvdStr[2])
-        nonce = generateNonce()
-        while (nonce >= prime):
-            nonce = generateNonce()
-        msg = ##Complete this line.
-        print("Message sent: " + str(msg))
-        s.sendall(bytes(msg, 'utf-8'))
-        state['nonce'] = nonce
-        state['RcvrPubKey'] = rcvrPK
-        status = 1
-    
-    strTest = "130 Ciphertext"
-    if (strTest in msg and status==-2):
-        Pub = computePublicKey(gen, prime, sKey)
-        RcvdStr = msg.split(' ')
-        y1 = int(RcvdStr[2])
-        srvrCtxt = int(RcvdStr[3])
-        print("Ciphertext received: " + str(y1) +"," + str(srvrCtxt))
-        dcryptedNonce = decryptMsg(srvrCtxt, y1, sKey, prime)
-        if (abs(nonce - dcryptedNonce) == 5):
-            print("Final status code: 150 OK")
-        else:
-            print("Final status code: 400 Error")
-        status = 0		# To terminate loop at client.
-    
-    strDiceRoll = "205 Roll Dice ACK"
-    if (strDiceRoll in msg and status==-2):
-        DiceValues = msg[18:].split(',')
-        if bids < 2:
-            msg = MakeBidMsg(state):
-            s.sendall(bytes(msg,'utf-8'))
-            bids += 1
-            status = 1
-        else:
-            status = 0
-        state['Bids'] = bids
-    
-    strBidAck = "305 Bid ACK"
-    if (strBidAck in msg and status==-2):
-        print("Message received: " + msg)
-        BidReceived = msg[12:].split(' ')
-        if bids < 2:
-            msg = MakeBidMsg(state):
-            s.sendall(bytes(msg,'utf-8'))
-            bids += 1
-            status = 1
-        else:
-            status = 0
-        state['Bids'] = bids
-    
-    strSuccess = "150 OK"
-    strFailure = "400 Error"
-    if ((strSuccess in msg or strFailure in msg) and status==-2):
-		status = 0 # To terminate loop at client
+	bids = int(state['Bids'])           # bids       = number of bids made
+	dice  = state['Dice']               # Dice = values of dice
+	dice = list(map(int,dice))          # Converting dice values to ints
 	
+	strTest = serverHello()
+	if (strTest in msg and status==-2):
+		#msg =  ##Complete this line
+		print("Message sent: " + msg)
+		s.sendall(bytes(msg,'utf-8'))
+		status = 1
+		
+	strTest = "111 Generator and Prime Rcvd"
+	if (strTest in msg and status==-2):
+        #msg = ##Complete this line
+		s.sendall(bytes(msg, 'utf-8'))
+		status = 1
+    
+	strTest = "120 PubKey"
+	if (strTest in msg and status==-2):
+		RcvdStr = msg.split(' ')
+		rcvrPK = int(RcvdStr[2])
+		nonce = generateNonce()
+		while (nonce >= prime):
+			nonce = generateNonce()
+		#msg = ##Complete this line.
+		print("Message sent: " + str(msg))
+		s.sendall(bytes(msg, 'utf-8'))
+		state['nonce'] = nonce
+		state['RcvrPubKey'] = rcvrPK
+		status = 1
+
+	strTest = "130 Ciphertext"
+	if (strTest in msg and status==-2):
+		Pub = computePublicKey(gen, prime, sKey)
+		RcvdStr = msg.split(' ')
+		y1 = int(RcvdStr[2])
+		srvrCtxt = int(RcvdStr[3])
+		print("Ciphertext received: " + str(y1) +"," + str(srvrCtxt))
+		dcryptedNonce = decryptMsg(srvrCtxt, y1, sKey, prime)
+		if (abs(nonce - dcryptedNonce) == 5):
+			print("Final status code: 150 OK")
+		else:
+			print("Final status code: 400 Error")
+		status = 0		# To terminate loop at client.
+    
+	strDiceRoll = "205 Roll Dice ACK"
+	if (strDiceRoll in msg and status==-2):
+		DiceValues = msg[18:].split(',')
+		if bids < 2:
+			msg = MakeBidMsg(state)
+			s.sendall(bytes(msg,'utf-8'))
+			bids += 1
+			status = 1
+		else:
+			status = 0
+		state['Bids'] = bids
+    
+	strBidAck = "305 Bid ACK"
+	if (strBidAck in msg and status==-2):
+		print("Message received: " + msg)
+		BidReceived = msg[12:].split(' ')
+		if bids < 2:
+			msg = MakeBidMsg(state)
+			s.sendall(bytes(msg,'utf-8'))
+			bids += 1
+			status = 1
+		else:
+			status = 0
+		state['Bids'] = bids
+    
+	strSuccess = "150 OK"
+	strFailure = "400 Error"
+	if ((strSuccess in msg or strFailure in msg) and status==-2):
+		status = 0 # To terminate loop at client
+		
 	if status==-2:
 		print("Incoming message was not processed. \r\n Terminating")
 		status = -1
@@ -272,14 +270,14 @@ def main():
 	# To ensure that the nonce can always be encrypted correctly.
 	while (nonce >= prime):
 		nonce = generateNonce()
-
-    bids = 0
+		
+	bids = 0
 	lastBid = [0,0]
 	# Bogus values that will be overwritten with values read from the socket.
 	secretKey = computeSecretKey(generator, prime)
 	rcvrPK = 60769
 	state = {'prime': prime, 'gen': generator, 'SecretKey': secretKey,
-	'RcvrPubKey': rcvrPK, 'nonce': nonce, 'LastBid': lastBid, , 'Bids': bids,
+	'RcvrPubKey': rcvrPK, 'nonce': nonce, 'LastBid': lastBid, 'Bids': bids,
 	'Dice': dice}
 	
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
